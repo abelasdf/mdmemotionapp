@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Emotionserkennung</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(145deg, #dbeafe, #f0fdf4);
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #111827;
+    }
+
+    .container {
+      background: white;
+      padding: 40px;
+      border-radius: 24px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      font-size: 26px;
+      margin-bottom: 25px;
+    }
+
+    input[type="file"] {
+      margin: 20px 0;
+      border: 2px dashed #ccc;
+      padding: 12px;
+      border-radius: 10px;
+      width: 100%;
+      cursor: pointer;
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="file"]:hover {
+      border-color: #10b981;
+    }
+
+    button {
+      background: #10b981;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 28px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background: #059669;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .preview {
+      margin-top: 20px;
+      animation: fadeIn 0.6s ease-in;
+    }
+
+    .preview img {
+      max-width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .preview img:hover {
+      transform: scale(1.03);
+    }
+
+    .result {
+      margin-top: 30px;
+      padding: 20px;
+      border-radius: 14px;
+      font-size: 22px;
+      font-weight: 600;
+      color: white;
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    /* Farben nach Emotion */
+    .neutral { background: #6b7280; }
+    .happiness { background: #facc15; color: #111827; }
+    .surprise { background: #38bdf8; }
+    .sadness { background: #3b82f6; }
+    .anger { background: #ef4444; }
+    .disgust { background: #10b981; }
+    .fear { background: #8b5cf6; }
+    .contempt { background: #a855f7; }
+  </style>
+  <script>
+    function showPreview(event) {
+      const [file] = event.target.files;
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('preview-img').src = e.target.result;
+          document.getElementById('preview-box').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1>Gesicht hochladen zur Emotionserkennung</h1>
+    <form method="POST" enctype="multipart/form-data">
+      <input type="file" name="image" accept="image/*" required onchange="showPreview(event)">
+      <button type="submit">Analysieren</button>
+    </form>
+
+    <div class="preview" id="preview-box" style="display:none;">
+      <img id="preview-img" src="" alt="Bildvorschau">
+    </div>
+
+    {% if prediction %}
+      <div class="result {{ prediction | lower }}">{{ prediction | capitalize }}</div>
+    {% endif %}
+  </div>
+</body>
+</html>
